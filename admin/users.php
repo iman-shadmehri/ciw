@@ -1,8 +1,23 @@
 <?php
 $title = "همه کاربران";
+require_once( "functions.php" );
+
+/*****  DELETE user     *****/
+
+if (isset($_GET['action']) == "delete") {
+    if (isset($_GET['id']))
+        $id = htmlspecialchars(trim($_GET['id']));
+
+    $stmt = "DELETE FROM `users` WHERE `id`=$id";
+    sql_runner( $stmt );
+}
+
+/*****  end of DELETE user     *****/
+
 require_once( "header.php" );
-require_once( "../dbconfig.php" );
+
 require_once( "default-page.php" );
+
 
 
 ?>
@@ -29,7 +44,7 @@ require_once( "default-page.php" );
             #####   CREATE QUERY AND RUN
             try
             {
-                $query = $conn->prepare( "SELECT * FROM `users` " );
+                $query = $connection->prepare( "SELECT * FROM `users` " );
                 $query->execute();
                 //$row = $query->fetch( PDO::FETCH_ASSOC );
 
@@ -67,37 +82,4 @@ require_once( "default-page.php" );
 
 <?php
 require_once( "footer.php" );
-?>
-<?php
-/*****  DELETE user     *****/
-var_dump("hello");
-var_dump($_GET['action']);
-if( isset( $_GET['action'] ) == "delete" )
-{
-    var_dump($_GET['id']);
-    if( isset( $_GET['id'] ) )
-        $id =  htmlspecialchars( trim( $_GET['id'] ) );
-        try
-        {
-            $sql = "SELECT * FROM `users` WHERE `id`=$id";
-            $query = $conn->prepare($sql);
-            $row = $query->execute();
-            //var_dump($query->rowCount());
-            //var_dump($query->fetchColumn());
-
-            if( $query->fetch( PDO::FETCH_ASSOC ) == 1 )
-            {
-                $sql = "DELETE FROM `users` WHERE `id`=$id";
-                $query = $conn->prepare( $sql );
-                $query->execute();
-            }
-
-        }
-        catch ( PDOException $e )
-        {
-            echo "Connection failed: " .$e->getMessage();
-        }
-}
-
-/*****  end of DELETE user     *****/
 ?>

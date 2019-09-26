@@ -1,29 +1,20 @@
 <?php
-    session_start();
-    $title = "صفحه ورود کاربران";
 
-    require( "header.php" );
-    require_once( "../dbconfig.php" );
-    require_once( "functions.php" );
-
+$title = "صفحه ورود کاربران";
+require_once( "functions.php" );
+require( "header.php" );
 
 
     if( !isset( $_SESSION[ 'iman_project' ] ) )
     {
-        ######## form proccessing
 
         if (user_input_check('POST ', 'login')) {
             if (user_input_check('POST ', 'username') and user_input_check('POST ', 'password')) {
-                $username = $_POST['username'];
-                $password = $_POST['password'];
 
-                try {
-                    #  $conn is Created by dbconfig.php
-                    $query = $conn->prepare("SELECT * FROM users WHERE username=? AND password=? ");
-                    $query->execute( array( $username, md5( $password ) ) );
-                    $row = $query->fetch(PDO::FETCH_ASSOC);
+                    $stmt = "SELECT * FROM users WHERE username=? AND password=?";
+                    $row = sql_runner_fetch( $stmt , [ $_POST['username'], md5( $_POST['password'] ) ] );
 
-                    if ($query->rowCount() == 1) {
+                    if ( sql_runner_rowCount( 1 )) {
                         //$_SESSION['iman_project'] = $row['id'];
                         $_SESSION['iman_project'] = $row;
                         header('location:index.php');
@@ -37,10 +28,6 @@
                         </div>
                         <?php
                     }
-
-                } catch (PDOException $e) {
-                    echo "Error: " . $e->getMessage();
-                }
 
             }
 

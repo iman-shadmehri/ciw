@@ -24,7 +24,7 @@
             try
             {
                 #####   SEND NEW POST INFO  #####
-                $query = $conn->prepare( "INSERT INTO `posts`(`id`, `auther_id`, `created_at`, `updated_at`, `title`, `content`, `status`, `slug`) VALUES (null,[value-2],[value-3],[value-4],[value-5],[value-6],[value-7],[value-8]) " );
+                $query = $connection->prepare( "INSERT INTO `posts`(`id`, `auther_id`, `created_at`, `updated_at`, `title`, `content`, `status`, `slug`) VALUES (null,[value-2],[value-3],[value-4],[value-5],[value-6],[value-7],[value-8]) " );
                 $query->execute();
                 $row = $query->fetch( PDO::FETCH_ASSOC);
             }

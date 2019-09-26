@@ -8,8 +8,8 @@
 
             try
             {
-                #  $conn is Created by dbconfig.php
-                $query = $conn->prepare( "SELECT * FROM users WHERE username=? AND password=? " );
+                #  $connection is Created by dbconfig.php
+                $query = $connection->prepare( "SELECT * FROM users WHERE username=? AND password=? " );
                 $query->execute( array( $username, $password ) );
                 $row = $query->fetch( PDO::FETCH_BOTH );
 
