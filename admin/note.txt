@@ -1,0 +1,6 @@
+
+Variables of Upload image Profile:
+$user_file['name'] -> name
+$user_file['type'] -> mime-type
+$user_file['size'] -> size
+File Path -> PROFILE_PATH .date("Y-m-d") .date("H-i-s") ."-".$user_file['name']

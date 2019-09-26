@@ -1,0 +1,328 @@
+@font-face {
+    src: url('../files/fonts/Sahel.ttf')  format('truetype'),
+        url('../files/fonts/Sahel.woff')   format('woff'),
+        url('../files/fonts/Sahel.eot?#iefix')   format('embedded-opentype');
+    font-weight: normal;
+    font-family: sahel;
+}
+/* 
+html5doctor.com Reset Stylesheet
+v1.6.1
+Last Updated: 2010-09-17
+Author: Richard Clark - http://richclarkdesign.com 
+Twitter: @rich_clark
+*/
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+    font-family: sahel;
+}
+
+body {
+    line-height:2;
+}
+html, body {
+    height: 100%;
+  }
+
+article,aside,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section { 
+    display:block;
+}
+
+nav ul {
+    list-style:none;
+}
+
+blockquote, q {
+    quotes:none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content:'';
+    content:none;
+}
+
+a {
+    margin:0;
+    padding:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* change colours to suit your needs */
+ins {
+    background-color:#ff9;
+    color:#000;
+    text-decoration:none;
+}
+
+/* change colours to suit your needs */
+mark {
+    background-color:#ff9;
+    color:#000; 
+    font-style:italic;
+    font-weight:bold;
+}
+
+del {
+    text-decoration: line-through;
+}
+
+abbr[title], dfn[title] {
+    border-bottom:1px dotted;
+    cursor:help;
+}
+
+table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+
+/* change border colour to suit your needs */
+hr {
+    display:block;
+    height:1px;
+    border:0;   
+    border-top:1px solid #cccccc;
+    margin:1em 0;
+    padding:0;
+}
+
+input, select {
+    vertical-align:middle;
+}
+/*
+nav ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+}
+*/
+
+body, nav, a {
+    font-family: sahel;
+}
+
+.uk-navbar-nav > li > a {
+    font-family: sahel;
+    color: #fff;
+}
+.uk-navbar-container:not(.uk-navbar-transparent) {
+    background: #2196f3;
+}
+nav .uk-search-default .uk-search-input {
+    
+    background: #fff;
+}
+
+nav .uk-search-default .uk-search-input:focus {
+    background: #fff;
+}
+.uk-navbar-nav > li:hover > a, .uk-navbar-nav > li > a:focus, .uk-navbar-nav > li > a.uk-open {
+    color: #404147;
+    outline: none;
+    background: #ffeb3b;
+}
+.footer {
+    background: #273345;
+    color: #fff;
+}
+.footer h2, .footer h3, .footer h4 {
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.1rem;
+
+}
+.footer .footer3 {
+    line-height: 3;
+}
+
+.uk-card-body .uk-card-title a {
+    color: #444;
+    text-decoration: none;
+}
+.login-body {
+    background: #ffeb3b;
+    background-image: url("images/03.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.login-form {
+
+    background: #fff;
+    width: 400px;
+    height: 450px;
+    padding: 5%;
+    display: block;
+    box-sizing: border-box;
+    border: 2px solid #1e87f0;
+    border-radius: 5px;
+    margin: 0 auto;
+    margin-top: 4%;
+    box-shadow: 0 0 50px #333;
+}
+.login-form h3 {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #444;
+}
+.login-form form input {
+    direction: ltr;
+    text-align: left;
+}
+.uk-form-icon:not(a):not(button):not(input) {
+    position: absolute;
+    z-index: 2;
+    top: 28px;
+}
+
+
+.sidebar {
+    width: 270px;
+    position: fixed;
+    overflow-y: auto;
+    display: block;
+    float: right;
+    background-color: #3e2723;
+    color: #fff;
+    height: 100vh;
+    top: 0;
+}
+.ps {
+        overflow: hidden !important;
+        overflow-anchor: none;
+        -ms-overflow-style: none;
+        touch-action: auto;
+        -ms-touch-action: auto;
+}
+.sidebar::-webkit-scrollbar {
+    width: 10px;
+}
+.sidebar::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 1px grey; 
+    border-radius: 10px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background: #b2acab63;
+    border-radius: 7px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #c2c2c29c; 
+}
+
+.sidebar h4 {
+    color: #ccc;
+}
+
+.uk-nav-default > li > a , .uk-nav li > a{
+    display: block;
+    color: #ccc;
+    text-decoration: none;
+    padding: 12px 35px;
+    border-bottom: 1px solid #ddd1;
+}
+.uk-nav-default > li > a:hover {
+    color: #3e2723;
+    background-color: #ffc107;
+}
+.uk-nav-default .uk-nav-sub a:hover, .uk-nav-default .uk-nav-sub a:focus {
+    color: #3e2723;
+    background-color: #ffc107;
+}
+.uk-nav-default > li > a > i {
+    margin-left: 15px;
+}
+.uk-nav-default > li > ul {
+    background-color: #4e342e;
+    padding: 8px 35px;
+    font-size: 0.788rem;
+}
+.header-buttons .header-button-item {
+    display: inline-block;
+    margin-left: 15px;
+}
+.account {
+    text-align: center;
+    border-bottom: 1px solid #ddd1;
+    padding-bottom: 20px;   
+}
+.account > .user-img {
+    width: 95px;
+    height: auto;
+    margin: 0 auto;
+}
+.uk-parent a:active, .uk-parent a:focus {
+    background: #c0ca33;
+    
+}
+.uk-nav-default > li > a:hover, .uk-nav-default > li > a:focus {
+    color: #fff;
+}
+
+.page-container {
+    margin-right: 270px;
+    position: relative;
+}
+.header-desktop {
+    background: #4e342e;
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    right: 270px;
+    left: 0;
+    color: #ccc;
+    padding: 8px 20px;
+}
+.header-buttons {
+    float: left;
+}
+main.main-section {
+    margin-top: 48px;
+    background-color: #e6e6e6;
+    height: 100vh;
+    bottom: 0;
+    overflow-y: auto;
+}
+.uk-table th, .uk-table td {
+    text-align: center;
+}
+.edit {
+    display: inline;
+    font-size: 12px;
+}
+.delete {
+    display: inline;
+    font-size: 12px;
+}
+.delete a {
+    color: red;
+}
+.delete, .edit {
+    visibility: hidden;
+}
+tr:hover > td .delete , tr:hover > td .edit {
+    visibility: visible;
+}
