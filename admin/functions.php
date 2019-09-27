@@ -12,12 +12,12 @@
         }
         switch ($validation_type) {
             case 'file':
-                if( !empty( $_FILE[ "$input_name" ] ){
+                if( !empty( $_FILE[ "$input_name" ] ) ){
                     return 1;
                 }
                 break;
             case 'empty':
-                if( !empty( $_REQUEST[ "$input_name" ] ){
+                if( !empty( $_REQUEST[ "$input_name" ] )) {
                     return 1;
                 }
                 break;
