@@ -4,31 +4,21 @@ $title = "صفحه ورود کاربران";
 require_once( "functions.php" );
 require( "header.php" );
 
-
+    
     if( !isset( $_SESSION[ 'iman_project' ] ) )
     {
-
-        if (user_input_check('POST ', 'login')) {
-            if (user_input_check('POST ', 'username') and user_input_check('POST ', 'password')) {
+        if (user_input_check('login')) {
+            if (user_input_check('username') && user_input_check('password')) {
 
                     $stmt = "SELECT * FROM users WHERE username=? AND password=?";
                     $row = sql_runner_fetch( $stmt , [ $_POST['username'], md5( $_POST['password'] ) ] );
 
                     if ( sql_runner_rowCount( 1 )) {
-                        //$_SESSION['iman_project'] = $row['id'];
                         $_SESSION['iman_project'] = $row;
                         header('location:index.php');
-
-
-                    } else {
-                        ?>
-                        <div class="uk-container uk-margin uk-alert-danger">
-                            <a class="uk-alert-close" uk-close></a>
-                            <p>نام کاربری یا رمزعبور اشتباه است!</p>
-                        </div>
-                        <?php
-                    }
-
+                    } 
+                    
+                    generate_alert_html("نام کاربری یا رمزعبور اشتباه است!");
             }
 
         }

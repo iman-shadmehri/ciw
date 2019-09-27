@@ -1,16 +1,22 @@
 <?php
 $title = "همه کاربران";
-require_once("functions.php");
+require_once( "functions.php" );
 
+if( ! isset($_SESSION['iman_project'] ) ){
+    header('location:login.php');
+}
 /*****  DELETE user     *****/
 
-if (isset($_GET['action']) == "delete") {
-    if (isset($_GET['id']))
-        $id = htmlspecialchars(trim($_GET['id']));
+if (isset($_REQUEST['action']) == "delete" && isset($_REQUEST['id'])) {
+    $id = htmlspecialchars(trim($_REQUEST['id']));
 
     $stmt = "DELETE FROM `users` WHERE `id`=$id";
     sql_runner($stmt);
 }
+
+// GET ALL USERS WITH THEIR AVATAR
+$stmt = " SELECT * FROM  `users` LEFT JOIN  `attachments` ON (`users`.id=`attachments`.id)";
+$users = sql_runner_fetch_all($stmt);
 
 /*****  end of DELETE user     *****/
 require_once("header.php");
@@ -38,8 +44,6 @@ require_once("default-page.php");
                     </thead>
                     <tbody>
                     <?php
-                    $stmt = " SELECT * FROM  `users` LEFT JOIN  `attachments` ON (`users`.id=`attachments`.id)";
-                    $users = sql_runner_fetch_all($stmt);
                     foreach ($users as $user) {
                         ?>
                         <tr>
@@ -50,7 +54,7 @@ require_once("default-page.php");
                             <td class="uk-table-link">
                                 <a class="uk-link-reset" href=""><?php echo $user['username']; ?></a>
                                 <div class="edit"><a
-                                            href="<?php echo "update-user.php?action=update&id=" . $user['id']; ?> ">ویرایش</a>
+                                            href="<?php echo "update-user.php?id=" . $user['id']; ?> ">ویرایش</a>
                                     |
                                 </div>
                                 <div class="delete"><a

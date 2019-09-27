@@ -28,13 +28,15 @@ require_once( "default-page.php" );
                 <?php
                 ################    Form Processing    ################
                 # Send button
-                if ( user_input_check('update') )
+                if (user_input_check('update') )
                 {
-                    /*************************  VALIDATION START   **********************/
                     $validation_passed = true;
+                    $password_change = true;
+                    $file_upload = true;
                     if ( user_input_check('fname') )
                     {
                         $validation_passed = false;
+
                         generate_alert_html("لطفا نام را تکمیل کنید.");
                     }
 
@@ -50,25 +52,34 @@ require_once( "default-page.php" );
                         generate_alert_html("لطفا جنسیت خود را مشخص کنید.");
                     }   
 
-                    if ( user_input_check('username', 'length', 3) )
+                    if (  ! user_input_check('username', 'length', 3) )
                     {
                         $validation_passed = false;
                         generate_alert_html("نام کاربری دیگری انتخاب کنید.");
                     }   
 
-                    if ( user_input_check('password', 'length', 3) )
+                    if (  ! user_input_check('password', 'length', 3) ||  ! user_input_check('password', 'equals', $_REQUEST['repassword']))
                     {
-                        $validation_passed = false;
-                        generate_alert_html("پسورد دیگری انتخاب کنید.");
+                        if( ! user_input_check('password') ){
+                            $validation_passed = false;
+                            if ( ! user_input_check('password', 'length', 3) ){
+                                generate_alert_html("پسورد کم تر از 3 کاراکتر می باشد.");
+                            }
+                            if(! user_input_check('password', 'equals', $_REQUEST['repassword'])){
+                                generate_alert_html("پسورد هم خوانی ندارد.");
+                            }
+                        }
+
+                        $password_change = false;
                     }  
 
-                    if ( user_input_check('email', 'email') )
+                    if (  ! user_input_check('email', 'email') )
                     {
                         $validation_passed = false;
                         generate_alert_html("ایمیل وارد شده نادرست است.");
                     }   
                     
-                    if ( user_input_check('phone', 'regex', '/^(\+98|0)?9\d{9}$/') )
+                    if (  ! user_input_check('phone', 'regex', '/^(\+98|0)?9\d{9}$/') )
                     {
                         $validation_passed = false;
                         generate_alert_html("شماره موبایل وارد شده نادرست است.");
@@ -80,51 +91,71 @@ require_once( "default-page.php" );
                         generate_alert_html("لطفا نوع کاربر را مشخص کنید.");
                     }   
 
-                    if ( user_input_check('profileimg', 'file') )
+                    // check to see whether user wants to change his avatar or not
+                    if (  ! user_input_check('profileimg', 'file') )
                     {
-                        $validation_passed = false;
-                        generate_alert_html("لطفا یک فایل را برای آپلود انتخاب کنید!");
+                        $file_upload = false;
                     }   
+                    if($file_upload){
+                        $user_file = $_FILES['profileimg'];
+                        if( ! in_array( strtolower($user_file['type']), explode('|', ALLOWED_FILE_TYPE)) )
+                        {
+                            $validation_passed = false;
+                            generate_alert_html("پسوند فایل باید یکی از این موارد باشد:jpeg, jpg, png, gif");
+                        }  
+
+                        if(  $user_file['size'] > PROFILE_FILE_SIZE  )
+                        {
+                            $validation_passed = false;
+                            generate_alert_html("فایل شما بزرگتر از مقدار مجاز است. حداکثر سایز مجاز: 512KB");
+                        }   
+
+                        if(  $user_file['error']  )
+                        {
+                            $validation_passed = false;
+                            generate_alert_html("آپلود انجام نشد. لطفا دوباره تلاش کنید.");
+                        }   
+
+                        $full_file_name = date("Y-m-d") ."-" .date("H-i-s") ."-" .$user_file["name"];
                         
-                    $user_file = $_FILES['profileimg'];
-                    if( ! in_array( strtolower($user_file['type']), explode('|', ALLOWED_FILE_TYPE)) )
-                    {
-                        $validation_passed = false;
-                        generate_alert_html("پسوند فایل باید یکی از این موارد باشد:jpeg, jpg, png, gif");
-                    }   
 
-                    if(  $user_file['size'] > PROFILE_FILE_SIZE  )
-                    {
-                        $validation_passed = false;
-                        generate_alert_html("فایل شما بزرگتر از مقدار مجاز است. حداکثر سایز مجاز: 512KB");
-                    }   
+                        if( ! move_uploaded_file( $user_file['tmp_name'], PROFILE_PATH .$full_file_name )  )
+                        {
+                            $validation_passed = false;
+                            generate_alert_html("آپلود موفقیت آمیز نبود. لطفا دوباره تلاش کنید.");
+                        } 
+                    }
 
-                    if(  $user_file['error']  )
-                    {
-                        $validation_passed = false;
-                        generate_alert_html("آپلود انجام نشد. لطفا دوباره تلاش کنید.");
-                    }   
-
-                    $full_file_name = date("Y-m-d") ."-" .date("H-i-s") ."-" .$user_file["name"];
-                    
-
-                    if( ! move_uploaded_file( $user_file['tmp_name'], PROFILE_PATH .$full_file_name )  )
-                    {
-                        $validation_passed = false;
-                        generate_alert_html("آپلود موفقیت آمیز نبود. لطفا دوباره تلاش کنید.");
-                    }   
                     /************************* VALIDATION END **********************/
                    
                     if($validation_passed){
-                        $full_path = DIRECTORY_PATH .date("Y-m-d") ."-" .date("H-i-s") ."-" .$user_file['name'];
-                        $sql = "INSERT INTO `attachments`( `name`, `mime_type`, `size`, `path`) VALUES (?,?,?,?)";
-                        sql_runner($sql,  [ $full_file_name , $user_file['type'] , $user_file['size'] , $full_path ] );  
 
-                        generate_alert_html("آپلود موفقیت آمیز بود.", 'success');
+                        if ($file_upload){
+                            $full_path = DIRECTORY_PATH .date("Y-m-d") ."-" .date("H-i-s") ."-" .$user_file['name'];
+                            unlink($user['path']);
+                            // update old attachment record
+                            $sql = "UPDATE `attachments` SET `name`=?, `mime_type`=?, `size`=?, `path`=? WHERE `id`=?";
+                            sql_runner($sql,  [ $full_file_name , $user_file['type'] , $user_file['size'] , $full_path , $user['avatar_id'] ] );  
+                            generate_alert_html("آپلود موفقیت آمیز بود.", 'success');
+    
+                        }
+                        
+                        $gender = $_REQUEST['gender']=="F" ? 0 : 1 ;
 
-                        $sql = "UPDATE TABLE `users` SET (`first_name`, `last_name`, `gender`, `password`, `email`, `phone` , `is_admin`) VALUES (?,?,?,?,?,?,?) WHERE `id`=?";
-                        sql_runner($sql,  [ $fname , $lname , $gender , $password , $email , $phone ,  1 , $_GET['id'] ] );
+                        // if user wanted to change password too
+                        if($password_change){
+                            $sql = "UPDATE  `users` SET `first_name`=?, `last_name`=?, `gender`=?, `password`=?, `email`=?, `phone`=? , `is_admin`=? WHERE `id`=?";
+                            sql_runner($sql,  [ $_REQUEST['fname'] , $_REQUEST['lname'] , $gender , md5($_REQUEST['password']) , $_REQUEST['email'] , $_REQUEST['phone'] ,  1 , $_REQUEST['id'] ] );
+                        }
+                        else {
+                            $sql = "UPDATE  `users` SET `first_name`=?, `last_name`=?, `gender`=?, `email`=?, `phone`=? , `is_admin`=? WHERE `id`=?";
+                            sql_runner($sql,  [ $_REQUEST['fname'] , $_REQUEST['lname'] , $gender , $_REQUEST['email'] , $_REQUEST['phone'] ,  1 , $_REQUEST['id'] ] );
+                        }
 
+                        //  GET USER UPDATED RECORD
+                        $id = htmlspecialchars( trim( $_REQUEST['id'] ) );
+                        $stmt = "SELECT *, `users`.`id` AS `users_id`  FROM `users` LEFT JOIN  `attachments` ON (`users`.avatar_id=`attachments`.id)  WHERE `users`.`id`=? ";
+                        $user = sql_runner_fetch( $stmt , [ $_SESSION['iman_project']['id'] ] ); 
                    }
                 }
                 ?>

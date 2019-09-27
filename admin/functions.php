@@ -6,34 +6,36 @@
     # A Function to Check User Inputs (ISSET('') and EMPTY('')
     function user_input_check( $input_name , $validation_type="empty", $validation_rule="")
     {
-        if( ! isset( $_REQUEST[ "$input_name" ] ) && $validation_type!="file" )
-        {
-            return 0;
-        }
+
         switch ($validation_type) {
             case 'file':
-                if( !empty( $_FILE[ "$input_name" ] ) ){
+                if( !empty( $_FILES[ "$input_name" ]['name'] ) ){
                     return 1;
                 }
                 break;
             case 'empty':
-                if( !empty( $_REQUEST[ "$input_name" ] )) {
+                if( isset( $_REQUEST[ "$input_name" ] ) && empty( $_REQUEST[ "$input_name" ] )) {
+                    return 1;
+                }
+                break;
+            case 'equals':
+                if( isset( $_REQUEST[ "$input_name" ] ) && $_REQUEST[ "$input_name" ] == $validation_rule ) {
                     return 1;
                 }
                 break;
             case 'length':
-                if (strlen( $_REQUEST[ "$input_name" ] ) >= $validation_rule ){
+                if (isset( $_REQUEST[ "$input_name" ] ) && strlen( $_REQUEST[ "$input_name" ] ) >= $validation_rule ){
                     return 1;
                 }
                 break;
             case 'regex':
-                if( preg_match( $validation_rule , $_REQUEST[ "$input_name" ] ))
+                if( isset( $_REQUEST[ "$input_name" ] ) && preg_match( $validation_rule , $_REQUEST[ "$input_name" ] ))
                     {
                     return 1;
                 }
                 break;
             case 'email':
-                if( preg_match('/^(?!(?:(?:\x22?\x5C[\x00-\x7E]\x22?)|(?:\x22?[^\x5C\x22]\x22?)){255,})(?!(?:(?:\x22?\x5C[\x00-\x7E]\x22?)|(?:\x22?[^\x5C\x22]\x22?)){65,}@)(?:(?:[\x21\x23-\x27\x2A\x2B\x2D\x2F-\x39\x3D\x3F\x5E-\x7E]+)|(?:\x22(?:[\x01-\x08\x0B\x0C\x0E-\x1F\x21\x23-\x5B\x5D-\x7F]|(?:\x5C[\x00-\x7F]))*\x22))(?:\.(?:(?:[\x21\x23-\x27\x2A\x2B\x2D\x2F-\x39\x3D\x3F\x5E-\x7E]+)|(?:\x22(?:[\x01-\x08\x0B\x0C\x0E-\x1F\x21\x23-\x5B\x5D-\x7F]|(?:\x5C[\x00-\x7F]))*\x22)))*@(?:(?:(?!.*[^.]{64,})(?:(?:(?:xn--)?[a-z0-9]+(?:-[a-z0-9]+)*\.){1,126}){1,}(?:(?:[a-z][a-z0-9]*)|(?:(?:xn--)[a-z0-9]+))(?:-[a-z0-9]+)*)|(?:\[(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){7})|(?:(?!(?:.*[a-f0-9][:\]]){7,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?)))|(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){5}:)|(?:(?!(?:.*[a-f0-9]:){5,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3}:)?)))?(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))(?:\.(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))){3}))\]))$/iD', $_REQUEST[ "$input_name" ] ))
+                if( isset( $_REQUEST[ "$input_name" ] ) && preg_match('/^(?!(?:(?:\x22?\x5C[\x00-\x7E]\x22?)|(?:\x22?[^\x5C\x22]\x22?)){255,})(?!(?:(?:\x22?\x5C[\x00-\x7E]\x22?)|(?:\x22?[^\x5C\x22]\x22?)){65,}@)(?:(?:[\x21\x23-\x27\x2A\x2B\x2D\x2F-\x39\x3D\x3F\x5E-\x7E]+)|(?:\x22(?:[\x01-\x08\x0B\x0C\x0E-\x1F\x21\x23-\x5B\x5D-\x7F]|(?:\x5C[\x00-\x7F]))*\x22))(?:\.(?:(?:[\x21\x23-\x27\x2A\x2B\x2D\x2F-\x39\x3D\x3F\x5E-\x7E]+)|(?:\x22(?:[\x01-\x08\x0B\x0C\x0E-\x1F\x21\x23-\x5B\x5D-\x7F]|(?:\x5C[\x00-\x7F]))*\x22)))*@(?:(?:(?!.*[^.]{64,})(?:(?:(?:xn--)?[a-z0-9]+(?:-[a-z0-9]+)*\.){1,126}){1,}(?:(?:[a-z][a-z0-9]*)|(?:(?:xn--)[a-z0-9]+))(?:-[a-z0-9]+)*)|(?:\[(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){7})|(?:(?!(?:.*[a-f0-9][:\]]){7,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?)))|(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){5}:)|(?:(?!(?:.*[a-f0-9]:){5,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3}:)?)))?(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))(?:\.(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))){3}))\]))$/iD', $_REQUEST[ "$input_name" ] ))
                     {
                     return 1;
                 }
@@ -41,8 +43,6 @@
             
         }
         return 0;
-        
-
     }
     #END of FUNCTION
 
@@ -80,6 +80,8 @@
         return sql_runner( $sql, $inputs )->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // return row counts if no parameter given 
+    // if parameter send it will check that row count is equal to parameter or not
     function sql_runner_rowCount( $count = -1 )
     {
         global $lastQuery;
