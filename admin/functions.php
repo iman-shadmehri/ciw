@@ -1,6 +1,7 @@
 <?php
     session_start();
-    require_once ( "../dbconfig.php" );
+    require_once ( "../env.php" );
+    require_once("../DatabaseConnection.php");
 
     # A Function to Check User Inputs (ISSET('') and EMPTY('')
     function user_input_check( $method, $input_name )
@@ -29,13 +30,13 @@
     #####   USER INPUT SECURITY CHECK!
     function sql_runner( $sql, $inputs=[] )
     {
-        global $connection;
+        global $connection, $lastQuery;
 
         try {
 
-            $connection = $connection->prepare($sql);
-            $connection->execute( $inputs );
-            return $connection;
+            $lastQuery = $connection->prepare($sql);
+            $lastQuery->execute( $inputs );
+            return $lastQuery;
 
 
         } catch (PDOException $e) {
@@ -48,17 +49,27 @@
         return sql_runner( $sql, $inputs )->fetch( PDO::FETCH_ASSOC );
     }
 
+    function sql_runner_fetch_all(  $sql, $inputs=[] )
+    {
+        return sql_runner( $sql, $inputs )->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     function sql_runner_rowCount( $count = -1 )
     {
-        global $connection;
+        global $lastQuery;
         try{
             if( $count == -1 )
             {
-                return $connection->rowCount();
+                return $lastQuery->rowCount();
             }
-            return $connection->rowCount() == $count;
+            return $lastQuery->rowCount() == $count;
         } catch (PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
         }
 
+    }
+
+    function lastInsertedID(){
+        global $connection;
+        return $connection->lastInsertId();
     }

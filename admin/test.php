@@ -8,7 +8,7 @@
 
             try
             {
-                #  $connection is Created by dbconfig.php
+                #  $connection is Created by DatabaseConnection.php
                 $query = $connection->prepare( "SELECT * FROM users WHERE username=? AND password=? " );
                 $query->execute( array( $username, $password ) );
                 $row = $query->fetch( PDO::FETCH_BOTH );

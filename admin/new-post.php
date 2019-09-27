@@ -3,7 +3,7 @@
 
     $title = "نوشته جدید";
     require_once( "header.php" );
-    require_once( "../dbconfig.php" );
+    require_once("../DatabaseConnection.php");
     require_once( "functions.php" );
     require_once( "default-page.php" );
 

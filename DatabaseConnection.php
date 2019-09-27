@@ -1,13 +1,7 @@
 <?php
 
-define( 'DB_NAME' , 'ciw' );
-define( 'DB_USER' , 'root' );
-define( 'DB_PASSWORD' , '' );
-define( 'DB_HOST' , 'localhost' );
-define( 'DB_CHARSET' , 'utf8' );
-
 // Create connection to database using PDO
-global $connection;
+global $connection, $lastQuery;
 try 
 {
     #$connection = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);

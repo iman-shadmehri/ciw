@@ -1,8 +1,7 @@
 <?php
-session_start();
     $title = "داشبورد";
+    require_once( "functions.php" );
     require_once( "header.php" );
-    require_once( "../dbconfig.php" );
     require_once( "default-page.php" );
 ?>
 

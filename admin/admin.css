@@ -326,3 +326,11 @@ main.main-section {
 tr:hover > td .delete , tr:hover > td .edit {
     visibility: visible;
 }
+.avatar {
+    float: left;
+    max-width: 200px;
+    max-height: 200px;
+}
+.avatar img {
+    border-radius: 50%;
+}

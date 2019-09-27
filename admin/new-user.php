@@ -1,13 +1,9 @@
 <?php
 
-session_start();
     $title = "افزودن کاربر";
+    require_once( "functions.php" );
     require_once( "header.php" );
-    require_once( "../dbconfig.php" );
     require_once( "default-page.php" );
-
-    define( "DIRECTORY_PATH", "/files/profiles/" );
-    define( "PROFILE_PATH", "..".DIRECTORY_PATH );
 ?>
 
     <div class="uk-child-width-expand@s uk-grid-match " uk-grid >
@@ -224,13 +220,10 @@ session_start();
                             if ( strlen( $user_file['name']) >= 5)
                             {
                                 // file type check
-                                if( $user_file['type'] == 'image/jpeg' ||
-                                $user_file['type'] == 'image/jpg' ||
-                                $user_file['type'] == 'image/png' ||
-                                $user_file['type'] == 'image/gif' )
+                                if( in_array( strtolower($user_file['type']), explode('|', ALLOWED_FILE_TYPE)) )
                                 {
                                     // File size check
-                                    if ( $user_file['size'] <= 512000 )
+                                    if ( $user_file['size'] <= PROFILE_FILE_SIZE )
                                     {
                                         //Error Check
                                         if ( !$user_file['error'] )
@@ -242,26 +235,21 @@ session_start();
                                                 // move file to directory
                                                 if( move_uploaded_file( $user_file['tmp_name'], PROFILE_PATH .$full_file_name ) )
                                                 {
-                                                    #####   INSERT INFO TO ATTACHMENT TABLE
-                                                    try
-                                                    {
-                                                        $full_path = DIRECTORY_PATH .date("Y-m-d") ."-" .date("H-i-s") ."-" .$user_file['name'];
-                                                        $sql = "INSERT INTO `attachment`( `name`, `mime_type`, `size`, `path`) VALUES (?,?,?,?)";
-                                                        $query = $connection->prepare( $sql );
-                                                        $query->execute( [ $full_file_name , $user_file['type'] , $user_file['size'] , $full_path ] );
-                                                    }
-                                                    catch (PDOException $e)
-                                                    {
-                                                        echo "Connection failed: " .$e->getMessage();
-                                                    }
-                                                ?>
+                                                    global $connection;
+                                                    $full_path = DIRECTORY_PATH .date("Y-m-d") ."-" .date("H-i-s") ."-" .$user_file['name'];
+                                                    $sql = "INSERT INTO `attachments`( `name`, `mime_type`, `size`, `path`) VALUES (?,?,?,?)";
+                                                    $avatar = sql_runner($sql,  [ $full_file_name , $user_file['type'] , $user_file['size'] , $full_path ] );
+                                                    ?>
 
-                                                <div class="uk-container uk-margin uk-alert-success">
-                                                    <a class="uk-alert-close" uk-close></a>
-                                                    <p>آپلود موفقیت آمیز بود.</p>
-                                                </div>
+                                                    <div class="uk-container uk-margin uk-alert-success">
+                                                        <a class="uk-alert-close" uk-close></a>
+                                                        <p>آپلود موفقیت آمیز بود.</p>
+                                                    </div>
 
-                                                <?php
+                                                    <?php
+                                                    $sql = "INSERT INTO `users`(`first_name`, `last_name`, `gender`, `username`, `password`, `email`, `phone` , `is_admin`, `avatar_id` ) VALUES (?,?,?,?,?,?,?,?,?)";
+                                                    sql_runner($sql,  [ $fname , $lname , $gender , $username , $password , $email , $phone ,  1 , lastInsertedID()] );
+
                                                 }
                                                 else
                                                 {
@@ -347,20 +335,7 @@ session_start();
                     }
                     /*************************  End of Upload check **************************/
 
-                    #####   CREATE QUERY
 
-                    try
-                    {
-
-                        $sql = "INSERT INTO `users`(`first_name`, `last_name`, `gender`, `username`, `password`, `email`, `phone` , `is_admin`) VALUES (?,?,?,?,?,?,?,?)";
-                        $query = $connection->prepare( $sql );
-                        $query->execute( [ $fname , $lname , $gender , $username , $password , $email , $phone ,  1 ] );
-
-                    }
-                    catch (PDOException $e)
-                    {
-
-                    }
                 }
                 ################    END Form Processing    ################
 

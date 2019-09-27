@@ -1,18 +1,18 @@
 <?php
 
-$title = "ویرایش کاربر";
+$title = "پروفایل من";
 require_once( "functions.php" );
 
-if( isset( $_GET['action'] ) == 'update' )
-{
-    if( isset( $_GET['id'] ) )
-    {
-        $id = htmlspecialchars( trim( $_GET['id'] ) );
-        $stmt = "SELECT *, `users`.`id` AS `users_id`  FROM `users` LEFT JOIN  `attachments` ON (`users`.avatar_id=`attachments`.id)  WHERE `users`.`id`=? ";
-        $user = sql_runner_fetch( $stmt , [$_GET['id']] );
-
-    }
+if( ! isset($_SESSION['iman_project'] ) ){
+    header('location:login.php');
 }
+
+
+$stmt = "SELECT *, `users`.`id` AS `users_id`  FROM `users` LEFT JOIN  `attachments` ON (`users`.avatar_id=`attachments`.id)  WHERE `users`.`id`=? ";
+$user = sql_runner_fetch( $stmt , [ $_SESSION['iman_project']['id'] ] );
+
+
+//var_dump($user);die;
 require_once( "header.php" );
 require_once( "default-page.php" );
 ?>
@@ -21,15 +21,14 @@ require_once( "default-page.php" );
 
         <div>
             <div class="uk-card uk-card-default uk-card-hover uk-card-body">
-                <h3 class="uk-card-title">ویرایش کاربر</h3>
+                <h3 class="uk-card-title">پروفایل من</h3>
                 <div class="avatar">
                     <img src="<?= $user['path'] ? "../" . $user['path'] : "images/default.png" ?>" alt="<?= $user['first_name']." ".$user['last_name'] ?>">
-
                 </div>
                 <?php
                 ################    Form Processing    ################
                 # Send button
-                if (isset( $_POST['adduser']) && !empty( $_POST['adduser']))
+                if (isset( $_POST['update']) && !empty( $_POST['update']))
                 {
                     /************************* name check   **********************/
                     if (isset( $_POST['fname']) && !empty( $_POST['fname']))
@@ -259,8 +258,8 @@ require_once( "default-page.php" );
                                                     </div>
 
                                                     <?php
-                                                    $sql = "UPDATE TABLE `users` SET (`first_name`, `last_name`, `gender`, `username`, `password`, `email`, `phone` , `is_admin`) VALUES (?,?,?,?,?,?,?,?) WHERE `id`=?";
-                                                    sql_runner($sql,  [ $fname , $lname , $gender , $username , $password , $email , $phone ,  1 , $_GET['id'] ] );
+                                                    $sql = "UPDATE TABLE `users` SET (`first_name`, `last_name`, `gender`, `password`, `email`, `phone` , `is_admin`) VALUES (?,?,?,?,?,?,?) WHERE `id`=?";
+                                                    sql_runner($sql,  [ $fname , $lname , $gender , $password , $email , $phone ,  1 , $_GET['id'] ] );
 
                                                 }
                                                 else
@@ -356,7 +355,7 @@ require_once( "default-page.php" );
                 ?>
 
                 <div class="uk-container uk-margin">
-                    <form class="uk-form-horizontal" action="new-user.php" method="post" enctype="multipart/form-data">
+                    <form class="uk-form-horizontal" action="profile.php" method="post" enctype="multipart/form-data">
                         <fieldset class="uk-fieldset">
 
                             <!-- FIRST NAME -->
@@ -375,10 +374,9 @@ require_once( "default-page.php" );
                                 <label><input class="uk-radio" value="M" type="radio" name="gender" <?= $user['gender']==1? "checked":"" ?> > مرد</label>
                                 <label><input class="uk-radio" value="F" type="radio" name="gender" <?= $user['gender']==0? "checked":"" ?> > زن</label>
                             </div>
-                            <!-- USERNAME -->
                             <div class="uk-margin">
                                 <label class="uk-form-label" for="username">نام کاربری: </label>
-                                <input class="uk-input uk-form-width-medium" id="username" name="username" type="text" placeholder="" value="<?= $user['username'] ?>">
+                                <input class="uk-input uk-form-width-medium" id="username" name="username" type="text" disabled placeholder="" value="<?= $user['username'] ?>">
                             </div>
                             <!-- PASSWORD -->
                             <div class="uk-margin">
@@ -427,7 +425,7 @@ require_once( "default-page.php" );
                             ------>
                             <!-- ADD BUTTON -->
                             <div class="uk-margin">
-                                <input type="submit" class="uk-button uk-button-primary" name="adduser" value="افزودن کاربر">
+                                <input type="submit" class="uk-button uk-button-primary" name="update" value="آپدیت پروفایل">
                             </div>
 
                         </fieldset>
