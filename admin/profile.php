@@ -7,12 +7,10 @@ if( ! isset($_SESSION['iman_project'] ) ){
     header('location:login.php');
 }
 
-
 $stmt = "SELECT *, `users`.`id` AS `users_id`  FROM `users` LEFT JOIN  `attachments` ON (`users`.avatar_id=`attachments`.id)  WHERE `users`.`id`=? ";
 $user = sql_runner_fetch( $stmt , [ $_SESSION['iman_project']['id'] ] );
 
 
-//var_dump($user);die;
 require_once( "header.php" );
 require_once( "default-page.php" );
 ?>
@@ -22,13 +20,10 @@ require_once( "default-page.php" );
         <div>
             <div class="uk-card uk-card-default uk-card-hover uk-card-body">
                 <h3 class="uk-card-title">پروفایل من</h3>
-                <div class="avatar">
-                    <img src="<?= $user['path'] ? "../" . $user['path'] : "images/default.png" ?>" alt="<?= $user['first_name']." ".$user['last_name'] ?>">
-                </div>
                 <?php
                 ################    Form Processing    ################
                 # Send button
-                if (user_input_check('update') )
+                if ( isset( $_REQUEST[ "update" ] ) && ! user_input_check('update'))
                 {
                     $validation_passed = true;
                     $password_change = true;
@@ -50,13 +45,7 @@ require_once( "default-page.php" );
                     {
                         $validation_passed = false;
                         generate_alert_html("لطفا جنسیت خود را مشخص کنید.");
-                    }   
-
-                    if (  ! user_input_check('username', 'length', 3) )
-                    {
-                        $validation_passed = false;
-                        generate_alert_html("نام کاربری دیگری انتخاب کنید.");
-                    }   
+                    }  
 
                     if (  ! user_input_check('password', 'length', 3) ||  ! user_input_check('password', 'equals', $_REQUEST['repassword']))
                     {
@@ -96,6 +85,7 @@ require_once( "default-page.php" );
                     {
                         $file_upload = false;
                     }   
+
                     if($file_upload){
                         $user_file = $_FILES['profileimg'];
                         if( ! in_array( strtolower($user_file['type']), explode('|', ALLOWED_FILE_TYPE)) )
@@ -117,51 +107,52 @@ require_once( "default-page.php" );
                         }   
 
                         $full_file_name = date("Y-m-d") ."-" .date("H-i-s") ."-" .$user_file["name"];
+                        $full_path = PROFILE_PATH .$full_file_name ;
                         
 
-                        if( ! move_uploaded_file( $user_file['tmp_name'], PROFILE_PATH .$full_file_name )  )
+                        if( ! move_uploaded_file( $user_file['tmp_name'], "..".$full_path )  )
                         {
                             $validation_passed = false;
                             generate_alert_html("آپلود موفقیت آمیز نبود. لطفا دوباره تلاش کنید.");
                         } 
+
                     }
 
                     /************************* VALIDATION END **********************/
                    
                     if($validation_passed){
-
-                        if ($file_upload){
-                            $full_path = DIRECTORY_PATH .date("Y-m-d") ."-" .date("H-i-s") ."-" .$user_file['name'];
-                            unlink($user['path']);
+                        if($file_upload){
+                            unlink("..".$user['path']);
                             // update old attachment record
                             $sql = "UPDATE `attachments` SET `name`=?, `mime_type`=?, `size`=?, `path`=? WHERE `id`=?";
                             sql_runner($sql,  [ $full_file_name , $user_file['type'] , $user_file['size'] , $full_path , $user['avatar_id'] ] );  
                             generate_alert_html("آپلود موفقیت آمیز بود.", 'success');
-    
                         }
-                        
+                    
                         $gender = $_REQUEST['gender']=="F" ? 0 : 1 ;
 
                         // if user wanted to change password too
                         if($password_change){
                             $sql = "UPDATE  `users` SET `first_name`=?, `last_name`=?, `gender`=?, `password`=?, `email`=?, `phone`=? , `is_admin`=? WHERE `id`=?";
-                            sql_runner($sql,  [ $_REQUEST['fname'] , $_REQUEST['lname'] , $gender , md5($_REQUEST['password']) , $_REQUEST['email'] , $_REQUEST['phone'] ,  1 , $_REQUEST['id'] ] );
+                            sql_runner($sql,  [ $_REQUEST['fname'] , $_REQUEST['lname'] , $gender , md5($_REQUEST['password']) , $_REQUEST['email'] , $_REQUEST['phone'] ,  1 ,  $_SESSION['iman_project']['id'] ] );
                         }
                         else {
                             $sql = "UPDATE  `users` SET `first_name`=?, `last_name`=?, `gender`=?, `email`=?, `phone`=? , `is_admin`=? WHERE `id`=?";
-                            sql_runner($sql,  [ $_REQUEST['fname'] , $_REQUEST['lname'] , $gender , $_REQUEST['email'] , $_REQUEST['phone'] ,  1 , $_REQUEST['id'] ] );
+                            sql_runner($sql,  [ $_REQUEST['fname'] , $_REQUEST['lname'] , $gender , $_REQUEST['email'] , $_REQUEST['phone'] ,  1 , $_SESSION['iman_project']['id'] ] );
                         }
-
-                        //  GET USER UPDATED RECORD
-                        $id = htmlspecialchars( trim( $_REQUEST['id'] ) );
+                        $id = htmlspecialchars( trim(  $_SESSION['iman_project']['id']) );
                         $stmt = "SELECT *, `users`.`id` AS `users_id`  FROM `users` LEFT JOIN  `attachments` ON (`users`.avatar_id=`attachments`.id)  WHERE `users`.`id`=? ";
-                        $user = sql_runner_fetch( $stmt , [ $_SESSION['iman_project']['id'] ] ); 
+                        $user = sql_runner_fetch( $stmt , [ $id ] ); 
+
                    }
                 }
                 ?>
+                <div class="avatar">
+                    <img src="<?= $user['path'] ? "../" . $user['path'] : "images/default.png" ?>" alt="<?= $user['first_name']." ".$user['last_name'] ?>">
+                </div>
 
                 <div class="uk-container uk-margin">
-                    <form class="uk-form-horizontal" action="profile.php" method="post" enctype="multipart/form-data">
+                    <form class="uk-form-horizontal" method="post" enctype="multipart/form-data">
                         <fieldset class="uk-fieldset">
 
                             <!-- FIRST NAME -->

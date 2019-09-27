@@ -15,7 +15,7 @@ if (isset($_REQUEST['action']) == "delete" && isset($_REQUEST['id'])) {
 }
 
 // GET ALL USERS WITH THEIR AVATAR
-$stmt = " SELECT * FROM  `users` LEFT JOIN  `attachments` ON (`users`.id=`attachments`.id)";
+$stmt = " SELECT *,`users`.`id` AS `users_id` FROM  `users` LEFT JOIN  `attachments` ON (`users`.avatar_id=`attachments`.id)";
 $users = sql_runner_fetch_all($stmt);
 
 /*****  end of DELETE user     *****/
