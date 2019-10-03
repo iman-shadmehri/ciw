@@ -1,23 +1,39 @@
 <?php
 $title = "دسته ها";
-require_once("functions.php");
+require_once( "functions.php" );
 
-if (!isset($_SESSION['iman_project'])) {
-    header('location:login.php');
+if( !isset( $_SESSION[ 'iman_project' ] ) ) {
+    header( 'location:login.php' );
 }
 /***** INSERT CATEGORY *****/
-if (user_inputs_check($_POST)) {
-    $sql = "INSERT INTO `categories` (`name`,`slug`) VALUES (?,?)";
-    sql_runner($sql, [htmlspecialchars($_POST['category-title']), htmlspecialchars(trim($_POST['category-slug']))]);
+if( user_inputs_check( $_POST ) ) {
+    
+    $category_title = htmlspecialchars( $_POST[ 'category-title' ] );
+    $category_slug = htmlspecialchars( str_replace( ' ' , '-' , $_POST[ 'category-slug' ] ) );
+    
+    //slug is uniqe
+    if( is_unique( $categories , "slug" , $category_slug ) ) {
+        $sql = "INSERT INTO `categories` (`name`,`slug`) VALUES (?,?)";
+        sql_runner( $sql , [ $category_title , $category_slug ] );
+    }
+    else {
+        $i = 1;
+        $category_slug = $category_slug . "-" . $i;
+        while( !is_unique( $categories , "slug" , $category_slug ) ) {
+            $i++;
+        }
+        $sql = "INSERT INTO `categories` (`name`,`slug`) VALUES (?,?)";
+        sql_runner( $sql , [ $category_title , $category_slug ] );
+    }
 }
 /***** END INSERT CATEGORY *****/
 $sql = "SELECT * FROM `categories` ORDER BY `name`";
-$categories = sql_runner_fetch_all($sql, []);
+$categories = sql_runner_fetch_all( $sql , [] );
 
 
-require_once("header.php");
-require_once("../DatabaseConnection.php");
-require_once("default-page.php");
+require_once( "header.php" );
+require_once( "../DatabaseConnection.php" );
+require_once( "default-page.php" );
 ?>
 
     <div id="admin-category">
@@ -58,21 +74,21 @@ require_once("default-page.php");
                                 </thead>
                                 <tbody>
                                 <?php
-                                foreach ($categories as $category) {
+                                foreach( $categories as $category ) {
                                     ?>
                                     <tr>
                                         <td class="uk-table-link">
-                                            <a class="uk-link-reset" href=""><?php echo $category['name']; ?></a>
+                                            <a class="uk-link-reset" href=""><?php echo $category[ 'name' ]; ?></a>
                                             <div class="edit"><a
-                                                        href="<?php echo "category.php?id=" . $category['id']; ?> ">ویرایش</a>
+                                                        href="<?php echo "category.php?id=" . $category[ 'id' ]; ?> ">ویرایش</a>
                                                 |
                                             </div>
                                             <div class="delete"><a
-                                                        href="<?php echo "category.php?action=delete&id=" . $category['id']; ?>">حذف
+                                                        href="<?php echo "category.php?action=delete&id=" . $category[ 'id' ]; ?>">حذف
                                                     دسته</a></div>
                                         </td>
-                                        <td class="uk-text-nowrap"><?php echo $category['slug']; ?></td>
-                                        <td class="uk-text-nowrap"><?php echo $category['id']; ?></td>
+                                        <td class="uk-text-nowrap"><?php echo $category[ 'slug' ]; ?></td>
+                                        <td class="uk-text-nowrap"><?php echo $category[ 'id' ]; ?></td>
                                     </tr>
                                     <?php
                                 }
@@ -93,5 +109,5 @@ require_once("default-page.php");
 
 
 <?php
-require_once("footer.php");
+require_once( "footer.php" );
 ?>
