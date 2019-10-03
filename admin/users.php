@@ -54,11 +54,11 @@ require_once("default-page.php");
                             <td class="uk-table-link">
                                 <a class="uk-link-reset" href=""><?php echo $user['username']; ?></a>
                                 <div class="edit"><a
-                                            href="<?php echo "update-user.php?id=" . $user['id']; ?> ">ویرایش</a>
+                                            href="<?php echo "update-user.php?id=" . $user['users_id']; ?> ">ویرایش</a>
                                     |
                                 </div>
                                 <div class="delete"><a
-                                            href="<?php echo "users.php?action=delete&id=" . $user['id']; ?>">حذف
+                                            href="<?php echo "users.php?action=delete&id=" . $user['users_id']; ?>">حذف
                                         کاربر</a></div>
                             </td>
                             <td class="uk-text-truncate"><?php echo $user['first_name'] . " " . $user['last_name']; ?></td>

@@ -28,7 +28,7 @@
                                     <a href="new-post.php" >نوشته جدید</a>
                                 </li>
                                 <li>
-                                    <a href="post-category.php" >دسته بندی</a>
+                                    <a href="category.php" >دسته بندی</a>
                                 </li>
                                 <li>
                                     <a href="post-tags.php" >برچسب</a>

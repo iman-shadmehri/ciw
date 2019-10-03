@@ -124,11 +124,25 @@ require_once( "default-page.php" );
                     if($validation_passed){
                         
                         if($file_upload){
-                            unlink("..".$user['path']);
-                            // update old attachment record
-                            $sql = "UPDATE `attachments` SET `name`=?, `mime_type`=?, `size`=?, `path`=? WHERE `id`=?";
-                            sql_runner($sql,  [ $full_file_name , $user_file['type'] , $user_file['size'] , $full_path , $user['avatar_id'] ] );  
-                            generate_alert_html("آپلود موفقیت آمیز بود.", 'success');
+                            if( !is_null( $user['path'] ) ) {
+                                unlink("..".$user['path']);
+                            }
+                            if( $user['avatar_id'] > 0 ){
+                                // update old attachment record
+                                $sql = "UPDATE `attachments` SET `name`=?, `mime_type`=?, `size`=?, `path`=? WHERE `id`=?";
+                                sql_runner($sql,  [ $full_file_name , $user_file['type'] , $user_file['size'] , $full_path , $user['avatar_id'] ] );
+                            }
+                            else{
+                                $full_path = DIRECTORY_PATH .date("Y-m-d") ."-" .date("H-i-s") ."-" .$user_file['name'];
+                                $sql = "INSERT INTO `attachments`( `name`, `mime_type`, `size`, `path`) VALUES (?,?,?,?)";
+                                sql_runner($sql,  [ $full_file_name , $user_file['type'] , $user_file['size'] , $full_path ] );
+
+                                // Update Users Table -> avatar_id
+                                $sql = "UPDATE `users` SET `avatar_id`=? WHERE `id`=? ";
+                                sql_runner( $sql , [ lastInsertedID() , $user['users_id'] ] );
+
+                            }
+                                generate_alert_html("آپلود موفقیت آمیز بود.", 'success');
                         }
                     
                         $gender = $_REQUEST['gender']=="F" ? 0 : 1 ;
