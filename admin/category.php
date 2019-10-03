@@ -12,14 +12,14 @@ if( user_inputs_check( $_POST ) ) {
     $category_slug = htmlspecialchars( str_replace( ' ' , '-' , $_POST[ 'category-slug' ] ) );
     
     //slug is uniqe
-    if( is_unique( $categories , "slug" , $category_slug ) ) {
+    if( is_unique( 'categories' , "slug" , $category_slug ) ) {
         $sql = "INSERT INTO `categories` (`name`,`slug`) VALUES (?,?)";
         sql_runner( $sql , [ $category_title , $category_slug ] );
     }
     else {
         $i = 1;
         $category_slug = $category_slug . "-" . $i;
-        while( !is_unique( $categories , "slug" , $category_slug ) ) {
+        while( !is_unique( 'categories' , "slug" , $category_slug ) ) {
             $i++;
         }
         $sql = "INSERT INTO `categories` (`name`,`slug`) VALUES (?,?)";
