@@ -1,32 +1,32 @@
 <?php
 $title = "نوشته جدید";
-require_once("functions.php");
+require_once( "functions.php" );
 
-if (!isset($_SESSION['iman_project'])) {
-    header('location:login.php');
+if( !isset( $_SESSION[ 'iman_project' ] ) ) {
+    header( 'location:login.php' );
 }
-require_once("header.php");
-require_once("../DatabaseConnection.php");
-require_once("default-page.php");
+require_once( "header.php" );
+require_once( "../DatabaseConnection.php" );
+require_once( "default-page.php" );
 
 
 ?>
 <?php
 
-if (user_input_check('POST', 'sendpost')) {
-    if (user_input_check('POST', 'post-title')) {
-        $post_title = $_POST['post-title'];
+if( user_input_check( 'POST' , 'sendpost' ) ) {
+    if( user_input_check( 'POST' , 'post-title' ) ) {
+        $post_title = $_POST[ 'post-title' ];
         try {
             #####   SEND NEW POST INFO  #####
-            $query = $connection->prepare("INSERT INTO `posts`(`id`, `auther_id`, `created_at`, `updated_at`, `title`, `content`, `status`, `slug`) VALUES (null,[value-2],[value-3],[value-4],[value-5],[value-6],[value-7],[value-8]) ");
-            $query->execute();
-            $row = $query->fetch(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-
+            $query = $connection -> prepare( "INSERT INTO `posts`(`id`, `auther_id`, `created_at`, `updated_at`, `title`, `content`, `status`, `slug`) VALUES (null,[value-2],[value-3],[value-4],[value-5],[value-6],[value-7],[value-8]) " );
+            $query -> execute();
+            $row = $query -> fetch( PDO::FETCH_ASSOC );
+        } catch( PDOException $e ) {
+        
         }
     }
-    if (user_input_check('POST', 'post-contetn')) {
-        $post_content = $_POST['post-content'];
+    if( user_input_check( 'POST' , 'post-contetn' ) ) {
+        $post_content = $_POST[ 'post-content' ];
     }
 }
 
@@ -100,5 +100,5 @@ if (user_input_check('POST', 'sendpost')) {
 <!-----------------     End TinyMCE Editor activation Script     ---------------->
 
 <?php
-require_once("footer.php");
+require_once( "footer.php" );
 ?>

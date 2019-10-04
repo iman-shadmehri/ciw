@@ -14,7 +14,7 @@ function user_input_check( $input_name , $validation_type = "empty" , $validatio
             }
             break;
         case 'empty':
-            if( isset( $_REQUEST[ "$input_name" ] ) && empty( $_REQUEST[ "$input_name" ] ) ) {
+            if( isset( $_REQUEST[ "$input_name" ] ) && !empty( $_REQUEST[ "$input_name" ] ) ) {
                 return 1;
             }
             break;

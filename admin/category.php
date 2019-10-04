@@ -11,7 +11,7 @@ if( user_inputs_check( $_POST ) ) {
     $category_title = htmlspecialchars( $_POST[ 'category-title' ] );
     $category_slug = htmlspecialchars( str_replace( ' ' , '-' , $_POST[ 'category-slug' ] ) );
     
-    //slug is uniqe
+    //slug is unique
     if( is_unique( 'categories' , "slug" , $category_slug ) ) {
         $sql = "INSERT INTO `categories` (`name`,`slug`) VALUES (?,?)";
         sql_runner( $sql , [ $category_title , $category_slug ] );
@@ -26,14 +26,23 @@ if( user_inputs_check( $_POST ) ) {
         sql_runner( $sql , [ $category_title , $category_slug ] );
     }
 }
-/***** END INSERT CATEGORY *****/
-$sql = "SELECT * FROM `categories` ORDER BY `name`";
-$categories = sql_runner_fetch_all( $sql , [] );
-
 
 require_once( "header.php" );
 require_once( "../DatabaseConnection.php" );
 require_once( "default-page.php" );
+
+/***** DELETE SPECIFIC CATEGORY *****/
+if( isset( $_GET[ 'action' ] ) == 'delete' && isset( $_GET[ 'id' ] ) ) {
+    $id = htmlspecialchars( trim( $_GET[ 'id' ] , ' ' ) );
+    $sql = "DELETE FROM `categories` WHERE `id` = ?";
+    $result = sql_runner( $sql , [ $id ] );
+    if( $result ) {
+        generate_alert_html( "دسته مورد نظر با موفقیت پاک شد." , "success" );
+    }
+}
+/***** DISPLAY ALL CATEGORIES *****/
+$sql = "SELECT * FROM `categories` ORDER BY `name`";
+$categories = sql_runner_fetch_all( $sql , [] );
 ?>
 
     <div id="admin-category">
@@ -80,7 +89,7 @@ require_once( "default-page.php" );
                                         <td class="uk-table-link">
                                             <a class="uk-link-reset" href=""><?php echo $category[ 'name' ]; ?></a>
                                             <div class="edit"><a
-                                                        href="<?php echo "category.php?id=" . $category[ 'id' ]; ?> ">ویرایش</a>
+                                                        href="<?php echo "edit-category.php?id=" . $category[ 'id' ]; ?> ">ویرایش</a>
                                                 |
                                             </div>
                                             <div class="delete"><a
