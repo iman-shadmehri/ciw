@@ -49,7 +49,7 @@ require_once( "default-page.php" );
                         <tr>
                             <!--                            <td><input class="uk-checkbox" type="checkbox"></td>-->
                             <td><img class="uk-preserve-width uk-border-circle"
-                                     src="<?= $user[ 'path' ] ? "../" . $user[ 'path' ] : "images/default.png" ?>"
+                                     src="<?= $user[ 'path' ] ? $user[ 'path' ] : "images/default.png" ?>"
                                      width="40px" height="40px" alt=""></td>
                             <td class="uk-table-link">
                                 <a class="uk-link-reset" href=""><?php echo $user[ 'username' ]; ?></a>

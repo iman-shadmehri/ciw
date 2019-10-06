@@ -77,7 +77,6 @@ require_once( "default-page.php" );
                     if( !user_input_check( 'profileimg' , 'file' ) ) {
                         $file_upload = false;
                     }
-                    
                     if( $file_upload ) {
                         $user_file = $_FILES[ 'profileimg' ];
                         if( !in_array( strtolower( $user_file[ 'type' ] ) , explode( '|' , ALLOWED_FILE_TYPE ) ) ) {
@@ -96,9 +95,9 @@ require_once( "default-page.php" );
                         }
                         
                         $full_file_name = date( "Y-m-d" ) . "-" . date( "H-i-s" ) . "-" . $user_file[ "name" ];
-                        $full_path = PROFILE_PATH . $full_file_name;
+                        $full_path = ".." . PROFILE_PATH . $full_file_name;
                         
-                        if( !move_uploaded_file( $user_file[ 'tmp_name' ] , ".." . $full_path ) ) {
+                        if( !move_uploaded_file( $user_file[ 'tmp_name' ] , $full_path ) ) {
                             $validation_passed = false;
                             generate_alert_html( "آپلود موفقیت آمیز نبود. لطفا دوباره تلاش کنید." );
                         }
@@ -106,14 +105,18 @@ require_once( "default-page.php" );
                     }
                     
                     /************************* VALIDATION END **********************/
-                    
                     if( $validation_passed ) {
                         
                         if( $file_upload ) {
                             if( !is_null( $user[ 'path' ] ) ) {
-                                unlink( ".." . $user[ 'path' ] );
+                                unlink( $user[ 'path' ] );
                             }
+                            
                             if( $user[ 'avatar_id' ] > 0 ) {
+                                $sql = "SELECT * FROM `attachments` WHERE `id` = ?";
+                                sql_runner( $sql , [ $user[ 'avatar_id' ] ] );
+                            }
+                            if( sql_runner_rowCount( 1 ) ) {
                                 // update old attachment record
                                 $sql = "UPDATE `attachments` SET `name`=?, `mime_type`=?, `size`=?, `path`=? WHERE `id`=?";
                                 sql_runner( $sql , [ $full_file_name , $user_file[ 'type' ] , $user_file[ 'size' ] , $full_path , $user[ 'avatar_id' ] ] );
@@ -150,7 +153,7 @@ require_once( "default-page.php" );
                 }
                 ?>
                 <div class="avatar">
-                    <img src="<?= $user[ 'path' ] ? "../" . $user[ 'path' ] : "images/default.png" ?>"
+                    <img src="<?= $user[ 'path' ] ? $user[ 'path' ] : "images/default.png" ?>"
                          alt="<?= $user[ 'first_name' ] . " " . $user[ 'last_name' ] ?>">
                 </div>
 

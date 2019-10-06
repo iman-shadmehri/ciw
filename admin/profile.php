@@ -23,7 +23,7 @@ require_once( "default-page.php" );
                 <?php
                 ################    Form Processing    ################
                 # Send button
-                if( isset( $_REQUEST[ "update" ] ) && user_input_check( 'update' ) ) {
+                if( user_input_check( 'update' ) ) {
                     $validation_passed = true;
                     $password_change = true;
                     $file_upload = true;
@@ -95,10 +95,10 @@ require_once( "default-page.php" );
                         }
                         
                         $full_file_name = date( "Y-m-d" ) . "-" . date( "H-i-s" ) . "-" . $user_file[ "name" ];
-                        $full_path = PROFILE_PATH . $full_file_name;
+                        $full_path = ".." . PROFILE_PATH . $full_file_name;
                         
                         
-                        if( !move_uploaded_file( $user_file[ 'tmp_name' ] , ".." . $full_path ) ) {
+                        if( !move_uploaded_file( $user_file[ 'tmp_name' ] , $full_path ) ) {
                             $validation_passed = false;
                             generate_alert_html( "آپلود موفقیت آمیز نبود. لطفا دوباره تلاش کنید." );
                         }
@@ -109,10 +109,22 @@ require_once( "default-page.php" );
                     
                     if( $validation_passed ) {
                         if( $file_upload ) {
-                            unlink( ".." . $user[ 'path' ] );
-                            // update old attachment record
-                            $sql = "UPDATE `attachments` SET `name`=?, `mime_type`=?, `size`=?, `path`=? WHERE `id`=?";
-                            sql_runner( $sql , [ $full_file_name , $user_file[ 'type' ] , $user_file[ 'size' ] , $full_path , $user[ 'avatar_id' ] ] );
+                            $old_file = $user[ 'path' ];
+                            if( unlink( $old_file ) ) {
+                                // update old attachment record
+                                $sql = "UPDATE `attachments` SET `name`=?, `mime_type`=?, `size`=?, `path`=? WHERE `id`=?";
+                                sql_runner( $sql , [ $full_file_name , $user_file[ 'type' ] , $user_file[ 'size' ] , $full_path , $user[ 'avatar_id' ] ] );
+                                generate_alert_html( "تصویر قبلی با موفقیت حذف شد" , 'success' );
+                            }
+                            else {
+                                $sql = "INSERT INTO `attachments` ( `name`, `mime_type`, `size`, `path`) VALUES (?,?,?,?)";
+                                sql_runner( $sql , [ $full_file_name , $user_file[ 'type' ] , $user_file[ 'size' ] , $full_path ] );
+                                generate_alert_html( "تصویر قبلی پاک نشد! " , 'warning' );
+                                //Update USER AVATAR ID
+                                $sql = "UPDATE `users` SET `avatar_id`=? WHERE `id`=?";
+                                sql_runner( $sql , [ lastInsertedID() , $_SESSION[ 'iman_project' ][ 'id' ] ] );
+                                
+                            }
                             generate_alert_html( "آپلود موفقیت آمیز بود." , 'success' );
                         }
                         
@@ -135,7 +147,7 @@ require_once( "default-page.php" );
                 }
                 ?>
                 <div class="avatar">
-                    <img src="<?= $user[ 'path' ] ? "../" . $user[ 'path' ] : "images/default.png" ?>"
+                    <img src="<?= $user[ 'path' ] ? $user[ 'path' ] : "images/default.png" ?>"
                          alt="<?= $user[ 'first_name' ] . " " . $user[ 'last_name' ] ?>">
                 </div>
 
